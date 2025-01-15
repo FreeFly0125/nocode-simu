@@ -42,3 +42,5 @@ yarn start
 ```
 
 Or you can run the application with [Docker](https://www.docker.com/).
+
+Application is deployed [here](https://nocode-simu.vercel.app).
