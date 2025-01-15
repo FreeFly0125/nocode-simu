@@ -1,21 +1,28 @@
 import React, { useState } from "react";
-import { TaskCard, CloseButton, SaveButton, TaskSelector } from "../Common";
-import { WorkFlowType } from "../../types";
+import { TaskCard, CloseButton, SaveButton } from "../Common";
+import { WorkFlowType, TaskType } from "../../types";
+import { TaskSelector } from "./TaskSelector";
 
 interface WorkflowSidebarProps {
   workflow: WorkFlowType;
   onClose: () => void;
-  onSave: () => void;
   onAddTask: (taskType: string) => void;
+  onTasksUpdate: (tasks: TaskType[]) => void;
 }
 
 export const WorkflowSidebar: React.FC<WorkflowSidebarProps> = ({
   workflow,
   onClose,
-  onSave,
   onAddTask,
+  onTasksUpdate,
 }) => {
   const [showTaskSelector, setShowTaskSelector] = useState(false);
+
+  const handleTaskUpdate = (updatedTask: TaskType, index: number) => {
+    const updatedTasks = [...workflow.tasks];
+    updatedTasks[index] = updatedTask;
+    onTasksUpdate?.(updatedTasks);
+  };
 
   return (
     <>
@@ -26,9 +33,12 @@ export const WorkflowSidebar: React.FC<WorkflowSidebarProps> = ({
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
-          {workflow.tasks?.map((task: any, index: number) => (
+          {workflow.tasks?.map((task: TaskType, index: number) => (
             <div key={index} className="mb-2">
-              <TaskCard task={task} />
+              <TaskCard
+                task={task}
+                onTaskUpdate={(updatedTask) => handleTaskUpdate(updatedTask, index)}
+              />
             </div>
           ))}
           <div className="mb-2">
@@ -37,7 +47,7 @@ export const WorkflowSidebar: React.FC<WorkflowSidebarProps> = ({
         </div>
 
         <div className="p-4 border-t">
-          <SaveButton onClick={onSave} />
+          <SaveButton onClick={onClose} />
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withMainlayout } from "../layouts";
 import { WorkflowCard } from "../components/Common";
 import { useWorkFlow } from "../hooks";
@@ -9,15 +9,18 @@ export const Dashboard: React.FC = withMainlayout(() => {
   const workflow = useWorkFlow();
   const selectedWorkflow = workflow.workflows[workflow.curIndex] || null;
 
+  useEffect(() => {
+    console.log("FIRST", selectedWorkflow);
+  }, []);
+
   const handleCreateWorkflow = () => {
     workflow.newWorkFlow();
+    console.log("SECOND", selectedWorkflow);
   };
 
   const handleWorkflowClick = (index: number) => {
     workflow.setCurIndex(index);
   };
-
-  const handleSave = () => {};
 
   const handleAddTask = (taskType: string) => {
     workflow.addTaskToWorkflow(taskType);
@@ -25,9 +28,9 @@ export const Dashboard: React.FC = withMainlayout(() => {
 
   return (
     <div className="flex">
-      <div className={`flex-1 p-4 ${selectedWorkflow ? "mr-96" : ""}`}>
+      <div className={`flex-1 p-4 ${selectedWorkflow ? "mr-96" : "mr-0"}`}>
         <h1 className="text-2xl p-4 font-bold mb-4">Workflows</h1>
-        <div className="grid grid-cols-5 auto-rows-auto gap-4 place-items-center">
+        <div className="grid grid-cols-7 auto-rows-auto gap-4 place-items-center">
           {workflow.workflows.map((wf, index) => (
             <WorkflowCard
               key={index}
@@ -48,8 +51,8 @@ export const Dashboard: React.FC = withMainlayout(() => {
         <WorkflowSidebar
           workflow={selectedWorkflow}
           onClose={() => workflow.setCurIndex(-1)}
-          onSave={handleSave}
           onAddTask={handleAddTask}
+          onTasksUpdate={workflow.updateWorkflowTasks}
         />
       )}
     </div>
